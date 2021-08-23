@@ -1,0 +1,6 @@
+
+BUILD_TEST(HLLPropertyCopyCheckRuleTest
+HLLPropertyCopyCheckRuleTest.cpp)
+
+BUILD_TEST(HLLPropertyStrongCheckRuleTest
+HLLPropertyStrongCheckRuleTest.cpp)
