@@ -1,6 +1,7 @@
 # Optional modules
 oclint-json-compilation-database/
 oclint-xcodebuild/
+oclint-xcode-project/
 
 # Third-party dependencies and build directory
 googletest/
@@ -31,4 +32,3 @@ compile_commands.json
 # System files
 .DS_Store
 .vscode/
-oclint-project/

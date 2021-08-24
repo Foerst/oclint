@@ -1,9 +1,9 @@
 #!/bin/sh -e
-if [ -d ./oclint-project ];then
-    rm -rf ./oclint-project
+if [ -d ./oclint-xcode-project ];then
+    rm -rf ./oclint-xcode-project
 fi
 
-mkdir oclint-project && cd oclint-project
+mkdir oclint-xcode-project && cd oclint-xcode-project
 cmake -G Xcode \
 -D CMAKE_CXX_COMPILER=../build/llvm-install/bin/clang++  \
 -D CMAKE_C_COMPILER=../build/llvm-install/bin/clang \
