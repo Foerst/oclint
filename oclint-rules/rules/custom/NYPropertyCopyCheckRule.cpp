@@ -5,7 +5,7 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class HLLPropertyCopyCheckRule : public AbstractASTVisitorRule<HLLPropertyCopyCheckRule>
+class NYPropertyCopyCheckRule : public AbstractASTVisitorRule<NYPropertyCopyCheckRule>
 {
 public:
     virtual const string name() const override
@@ -20,7 +20,7 @@ public:
 
     virtual const string category() const override
     {
-        return "HLLPropertyCopyCheckRule";
+        return "NYPropertyCopyCheckRule";
     }
 
 #ifdef DOCGEN
@@ -1918,4 +1918,4 @@ public:
 
 };
 
-static RuleSet rules(new HLLPropertyCopyCheckRule());
+static RuleSet rules(new NYPropertyCopyCheckRule());

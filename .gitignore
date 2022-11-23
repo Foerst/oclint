@@ -32,3 +32,7 @@ compile_commands.json
 # System files
 .DS_Store
 .vscode/
+oclint-json-compilation-database.zip
+build.zip
+oclint-xcodebuild.zip
+RuleTest/RuleTest.xcodeproj/project.xcworkspace/xcuserdata/qiwen.xcuserdatad/UserInterfaceState.xcuserstate

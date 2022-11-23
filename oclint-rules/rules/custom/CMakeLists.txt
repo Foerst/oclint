@@ -1,6 +1,6 @@
 
-SET(BuildHLLPropertyCopyCheckRule HLLPropertyCopyCheck)
-BUILD_DYNAMIC_RULES("${BuildHLLPropertyCopyCheckRule}")
+SET(BuildNYPropertyCopyCheckRule NYPropertyCopyCheck)
+BUILD_DYNAMIC_RULES("${BuildNYPropertyCopyCheckRule}")
 
-SET(BuildHLLPropertyStrongCheckRule HLLPropertyStrongCheck)
-BUILD_DYNAMIC_RULES("${BuildHLLPropertyStrongCheckRule}")
+SET(BuildNYPropertyStrongCheckRule NYPropertyStrongCheck)
+BUILD_DYNAMIC_RULES("${BuildNYPropertyStrongCheckRule}")
