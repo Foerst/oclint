@@ -4,3 +4,6 @@ HLLPropertyCopyCheckRuleTest.cpp)
 
 BUILD_TEST(HLLPropertyStrongCheckRuleTest
 HLLPropertyStrongCheckRuleTest.cpp)
+
+BUILD_TEST(NYClassPrefixRuleRuleTest
+NYClassPrefixRuleRuleTest.cpp)
