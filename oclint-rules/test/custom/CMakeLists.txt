@@ -7,3 +7,9 @@ HLLPropertyStrongCheckRuleTest.cpp)
 
 BUILD_TEST(NYClassPrefixRuleRuleTest
 NYClassPrefixRuleRuleTest.cpp)
+
+BUILD_TEST(NYMethodNamingRuleTest
+NYMethodNamingRuleTest.cpp)
+
+BUILD_TEST(NYPropertyWeakRuleTest
+NYPropertyWeakRuleTest.cpp)

@@ -5,9 +5,11 @@
 //  Created by edy on 2021/8/19.
 //
 
+@class _viewCcjd;
+
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface _ViewController ()
 @property (nonatomic) NSString *strNonKeyword;
 @property (nonatomic, strong) NSString *str;
 @property (nonatomic, strong) NSAttributedString *astr;
@@ -21,13 +23,28 @@
 @property (nonatomic) NSMutableDictionary *dictM;
 @property (nonatomic, copy) NSMutableURLRequest *requestM;
 
+@property (nonatomic, assign) id delegate;
+
 @end
 
-@implementation ViewController
+@implementation _ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+
+- (void)Ujdjf:(NSString *)_JDJJ {
+    
+}
+
+- (void)_djfjdj {
+    
+}
+
+- (void)djdjf_dfdf {
+    
 }
 
 

@@ -1,17 +1,16 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
 
-
 using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class NYClassPrefixRule : public AbstractASTVisitorRule<NYClassPrefixRule>
+class NYMethodNamingRule : public AbstractASTVisitorRule<NYMethodNamingRule>
 {
 public:
     virtual const string name() const override
     {
-        return "OC类需要前缀NY";
+        return "";
     }
 
     virtual int priority() const override
@@ -21,7 +20,7 @@ public:
 
     virtual const string category() const override
     {
-        return "NYClassPrefixRule";
+        return "NYMethodNamingRule";
     }
 
 #ifdef DOCGEN
@@ -32,7 +31,7 @@ public:
 
     virtual const std::string description() const override
     {
-        return "OC类需要前缀NY";
+        return ""; // TODO: fill in the description of the rule.
     }
 
     virtual const std::string example() const override
@@ -42,8 +41,7 @@ public:
 
     void example()
     {
-        @class _ViewController: UIViewController
-        @end
+        // TODO: modify the example for this rule.
     }
         )rst";
     }
@@ -1699,11 +1697,47 @@ public:
     }
      */
 
-    /*
-    bool VisitObjCMethodDecl(ObjCMethodDecl *node){
+    /* Visit ObjCMethodDecl */
+    bool VisitObjCMethodDecl(ObjCMethodDecl *node)
+    {
+        //检查名称的每部分，都不允许以大写字母开头
+        Selector sel = node -> getSelector();
+        int selectorPartCount = node -> getNumSelectorLocs();
+        
+        for (int i = 0; i < selectorPartCount; i++) {
+            // 方法参数名称
+            StringRef selName = sel.getNameForSlot(i);
+            if (selName.size() == 0) {
+                return true;
+            }
+            char c = selName[0];
+            if (isUppercase(c)) {
+                // 提示
+                // 获取将要报错的位置
+                SourceLocation loc = node->getSelectorLoc(i);
+                addViolation(loc, loc, this, "方法名建议小写开头");
+                break;
+            }
+            if (c == '_') {
+                // 提示
+                // 获取将要报错的位置
+                SourceLocation loc = node->getSelectorLoc(i);
+                addViolation(loc, loc, this, "方法名建议不要以下划线开头");
+                break;
+            }
+            
+            for (int j = 0; j < selName.size(); j++) {
+                char c = selName[j];
+                if (c == '_') {
+                    SourceLocation loc = node->getSelectorLoc(i);
+                    addViolation(loc, loc, this, "方法名建议不要包含下划线");
+                    break;
+                }
+            }
+        }
         return true;
-    }*/
-
+    }
+     
 
     /* Visit ObjCContainerDecl
     bool VisitObjCContainerDecl(ObjCContainerDecl *node)
@@ -1712,40 +1746,26 @@ public:
     }
      */
 
-    /* Visit ObjCCategoryDecl */
+    /* Visit ObjCCategoryDecl
     bool VisitObjCCategoryDecl(ObjCCategoryDecl *node)
     {
-         ObjCInterfaceDecl *interface = node->getClassInterface();
-        StringRef className = interface->getName();
-        //类名不能包含下划线
-        bool startWithNY = className.startswith("NY");
-        if (!startWithNY) {
-            addViolation(node, this);
-        }
         return true;
     }
-     
+     */
 
-    /* Visit ObjCProtocolDecl */
+    /* Visit ObjCProtocolDecl
     bool VisitObjCProtocolDecl(ObjCProtocolDecl *node)
     {
         return true;
     }
-    
+     */
 
-    /* Visit ObjCInterfaceDecl @class _viewCcjd这种 */
-    bool VisitObjCInterfaceDecl(ObjCInterfaceDecl *decl)
+    /* Visit ObjCInterfaceDecl
+    bool VisitObjCInterfaceDecl(ObjCInterfaceDecl *node)
     {
-        StringRef className = decl->getName();
-        //类名不能包含下划线
-        bool startWithNY = className.startswith("NY");
-        if (!startWithNY) {
-            addViolation(decl, this);
-        }
-        
         return true;
     }
-     
+     */
 
     /* Visit ObjCCategoryImplDecl
     bool VisitObjCCategoryImplDecl(ObjCCategoryImplDecl *node)
@@ -1754,19 +1774,12 @@ public:
     }
      */
 
-    /* Visit ObjCImplementationDecl */
+    /* Visit ObjCImplementationDecl
     bool VisitObjCImplementationDecl(ObjCImplementationDecl *node)
     {
-        StringRef className = node->getClassInterface()->getName();
-        //类名不能包含下划线
-        bool startWithNY = className.startswith("NY");
-        if (!startWithNY) {
-            addViolation(node, this);
-        }
         return true;
     }
-    
-     
+     */
 
     /* Visit ObjCPropertyDecl
     bool VisitObjCPropertyDecl(ObjCPropertyDecl *node)
@@ -1910,4 +1923,4 @@ public:
 
 };
 
-static RuleSet rules(new NYClassPrefixRule());
+static RuleSet rules(new NYMethodNamingRule());
