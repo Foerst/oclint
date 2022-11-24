@@ -13,3 +13,6 @@ NYMethodNamingRuleTest.cpp)
 
 BUILD_TEST(NYPropertyWeakRuleTest
 NYPropertyWeakRuleTest.cpp)
+
+BUILD_TEST(NYBOOLInitRuleTest
+NYBOOLInitRuleTest.cpp)

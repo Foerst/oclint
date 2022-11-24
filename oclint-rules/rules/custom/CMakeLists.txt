@@ -13,3 +13,6 @@ BUILD_DYNAMIC_RULES("${BuildNYMethodNamingRule}")
 
 SET(BuildNYPropertyWeakRule NYPropertyWeak)
 BUILD_DYNAMIC_RULES("${BuildNYPropertyWeakRule}")
+
+SET(BuildNYBOOLInitRule NYBOOLInit)
+BUILD_DYNAMIC_RULES("${BuildNYBOOLInitRule}")

@@ -5,22 +5,22 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class NYPropertyWeakRule : public AbstractASTVisitorRule<NYPropertyWeakRule>
+class NYBOOLInitRule : public AbstractASTVisitorRule<NYBOOLInitRule>
 {
 public:
     virtual const string name() const override
     {
-        return "要用weak修饰";
+        return "BOOL变量初始化一定要赋值！";
     }
 
     virtual int priority() const override
     {
-        return 3;
+        return 1;
     }
 
     virtual const string category() const override
     {
-        return "NYPropertyWeakRule";
+        return "NYBOOLInitRule";
     }
 
 #ifdef DOCGEN
@@ -101,12 +101,26 @@ public:
     }
      */
 
-    /* Visit IfStmt
+    /* Visit IfStmt */
     bool VisitIfStmt(IfStmt *node)
     {
+        const char *name = node->getCond()->getStmtClassName();
+        string nameStr = string(name);
+        if (nameStr.compare("BOOL") || nameStr.compare("boolean") || nameStr.compare("bool")) {
+            if (node->getConditionVariableDeclStmt()) {
+                addViolation(node->getConditionVariableDeclStmt(), this, name);
+            } else {
+                addViolation(node, this, nameStr);
+            }
+            
+            if (node->getConditionVariable() && !node->getConditionVariable()->hasInit()) {
+                addViolation(node, this, "fdfdf");
+            }
+        }
+        
         return true;
     }
-     */
+    
 
     /* Visit SwitchStmt
     bool VisitSwitchStmt(SwitchStmt *node)
@@ -171,12 +185,12 @@ public:
     }
      */
 
-    /* Visit DeclStmt 
+    /* Visit DeclStmt */
     bool VisitDeclStmt (DeclStmt  *node)
     {
         return true;
     }
-     */
+     
 
     /* Visit SwitchCase
     bool VisitSwitchCase(SwitchCase *node)
@@ -1746,22 +1760,12 @@ public:
     }
      */
 
-    /* Visit ObjCPropertyDecl */
-    bool VisitObjCPropertyDecl(ObjCPropertyDecl *decl)
+    /* Visit ObjCPropertyDecl
+    bool VisitObjCPropertyDecl(ObjCPropertyDecl *node)
     {
-        ObjCPropertyAttribute::Kind attribute = decl->getPropertyAttributes();
-        bool isStrong = (attribute & ObjCPropertyAttribute::Kind::kind_strong) > 0;
-        bool isAssign = (attribute & ObjCPropertyAttribute::Kind::kind_assign) > 0;
-        string type = decl->getType().getAsString();
-        
-        StringRef name = decl->getName();
-        // getType()转为String获取到的类型里如果包含'<'和'>'则认为是delegate
-        if ((type.find("id")!=type.npos || type.find("*")!=type.npos || (type.find("<")!=type.npos && type.find(">")!=type.npos)) && (name.find("delegate")!=name.npos || name.find("listener")!=name.npos || name.find("observer")!=name.npos || name.find("proxy")!=name.npos) && (isStrong || isAssign)) {
-            addViolation(decl, this);
-        }
         return true;
     }
-    
+     */
 
     /* Visit ObjCCompatibleAliasDecl
     bool VisitObjCCompatibleAliasDecl(ObjCCompatibleAliasDecl *node)
@@ -1898,4 +1902,4 @@ public:
 
 };
 
-static RuleSet rules(new NYPropertyWeakRule());
+static RuleSet rules(new NYBOOLInitRule());

@@ -31,7 +31,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self testBool];
+    
+}
+
+- (void)testBool {
+    BOOL flag;
+    if (flag) {
+        NSLog(@"dfjsdjkfjk");
+    }
 }
 
 
