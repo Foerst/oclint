@@ -1755,7 +1755,7 @@ public:
         string type = decl->getType().getAsString();
         
         StringRef name = decl->getName();
-        if ((type.find("id")!=type.npos || type.find("*")!=type.npos) && name.find("delegate")!=name.npos && (isStrong || isAssign)) {
+        if ((type.find("id")!=type.npos || type.find("*")!=type.npos) && (name.find("delegate")!=name.npos || name.find("listener")!=name.npos || name.find("observer")!=name.npos || name.find("proxy")!=name.npos) && (isStrong || isAssign)) {
             addViolation(decl, this);
         }
         return true;
