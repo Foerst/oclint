@@ -5,12 +5,12 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class NYBOOLInitRule : public AbstractASTVisitorRule<NYBOOLInitRule>
+class NYEnumCheckRule : public AbstractASTVisitorRule<NYEnumCheckRule>
 {
 public:
     virtual const string name() const override
     {
-        return "BOOL变量初始化一定要赋值！";
+        return "";
     }
 
     virtual int priority() const override
@@ -20,7 +20,7 @@ public:
 
     virtual const string category() const override
     {
-        return "NYBOOLInitRule";
+        return "NYEnumCheckRule";
     }
 
 #ifdef DOCGEN
@@ -101,14 +101,12 @@ public:
     }
      */
 
-    /* Visit IfStmt */
+    /* Visit IfStmt
     bool VisitIfStmt(IfStmt *node)
     {
-        
-        
         return true;
     }
-    
+     */
 
     /* Visit SwitchStmt
     bool VisitSwitchStmt(SwitchStmt *node)
@@ -173,12 +171,12 @@ public:
     }
      */
 
-    /* Visit DeclStmt
+    /* Visit DeclStmt 
     bool VisitDeclStmt (DeclStmt  *node)
     {
         return true;
-    }*/
-     
+    }
+     */
 
     /* Visit SwitchCase
     bool VisitSwitchCase(SwitchCase *node)
@@ -1391,12 +1389,32 @@ public:
     }
      */
 
-    /* Visit EnumDecl
     bool VisitEnumDecl(EnumDecl *node)
     {
+        string nodename = node->getNameAsString();
+        if (nodename.length() > 0) {
+            for (clang::CapturedDecl::specific_decl_iterator<EnumConstantDecl> decllt = node->enumerator_begin(); decllt != node->enumerator_end(); decllt++) {
+                EnumConstantDecl *tmp = *decllt;
+                string tmpname = tmp->getNameAsString();
+                if (tmpname.rfind(nodename, 0) != 0) {
+                    SourceLocation loc = tmp->getLocation();
+                    string message = "枚举值\'" + tmpname + "\'与声明的类型不对应，应该以\'" + nodename + "\'为前缀";
+                    addViolation(loc, loc, this, message);
+                }
+            }
+        }
+        
+        Decl *decl = node->getPreviousDecl();
+        bool hasattr = node->hasAttrs();
+        if (hasattr || decl) {
+            return true;
+        }
+        SourceLocation loc = node->getLocation();
+        string message = "请使用\'typedef NS_ENUM\'类型枚举";
+        addViolation(loc, loc, this, message);
         return true;
     }
-     */
+
 
     /* Visit RecordDecl
     bool VisitRecordDecl(RecordDecl *node)
@@ -1559,18 +1577,12 @@ public:
     }
      */
 
-    /* Visit VarDecl */
+    /* Visit VarDecl
     bool VisitVarDecl(VarDecl *node)
     {
-        string nameStr = node->getType().getAsString();
-        if ((nameStr.compare("BOOL")==0 || nameStr.compare("boolean")==0 || nameStr.compare("bool")==0 ) && node->isLocalVarDecl()) {
-            if (node->getInit() == nullptr) {
-                addViolation(node, this);
-            }
-        }
         return true;
     }
-    
+     */
 
     /* Visit VarTemplateSpecializationDecl
     bool VisitVarTemplateSpecializationDecl(VarTemplateSpecializationDecl *node)
@@ -1896,4 +1908,4 @@ public:
 
 };
 
-static RuleSet rules(new NYBOOLInitRule());
+static RuleSet rules(new NYEnumCheckRule());

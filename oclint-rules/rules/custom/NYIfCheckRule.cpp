@@ -5,12 +5,12 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class NYBOOLInitRule : public AbstractASTVisitorRule<NYBOOLInitRule>
+class NYIfCheckRule : public AbstractASTVisitorRule<NYIfCheckRule>
 {
 public:
     virtual const string name() const override
     {
-        return "BOOL变量初始化一定要赋值！";
+        return "";
     }
 
     virtual int priority() const override
@@ -20,7 +20,7 @@ public:
 
     virtual const string category() const override
     {
-        return "NYBOOLInitRule";
+        return "NYIfCheckRule";
     }
 
 #ifdef DOCGEN
@@ -104,8 +104,11 @@ public:
     /* Visit IfStmt */
     bool VisitIfStmt(IfStmt *node)
     {
-        
-        
+        Stmt *thenStmt = node->getThen();
+        //判断if 语句有没有{}
+        if (!thenStmt || !(isa<CompoundStmt>(thenStmt))) {
+            addViolation(node, this, "if 语句没有{}");
+        }
         return true;
     }
     
@@ -173,12 +176,12 @@ public:
     }
      */
 
-    /* Visit DeclStmt
+    /* Visit DeclStmt 
     bool VisitDeclStmt (DeclStmt  *node)
     {
         return true;
-    }*/
-     
+    }
+     */
 
     /* Visit SwitchCase
     bool VisitSwitchCase(SwitchCase *node)
@@ -1559,18 +1562,12 @@ public:
     }
      */
 
-    /* Visit VarDecl */
+    /* Visit VarDecl
     bool VisitVarDecl(VarDecl *node)
     {
-        string nameStr = node->getType().getAsString();
-        if ((nameStr.compare("BOOL")==0 || nameStr.compare("boolean")==0 || nameStr.compare("bool")==0 ) && node->isLocalVarDecl()) {
-            if (node->getInit() == nullptr) {
-                addViolation(node, this);
-            }
-        }
         return true;
     }
-    
+     */
 
     /* Visit VarTemplateSpecializationDecl
     bool VisitVarTemplateSpecializationDecl(VarTemplateSpecializationDecl *node)
@@ -1896,4 +1893,4 @@ public:
 
 };
 
-static RuleSet rules(new NYBOOLInitRule());
+static RuleSet rules(new NYIfCheckRule());

@@ -16,3 +16,18 @@ BUILD_DYNAMIC_RULES("${BuildNYPropertyWeakRule}")
 
 SET(BuildNYBOOLInitRule NYBOOLInit)
 BUILD_DYNAMIC_RULES("${BuildNYBOOLInitRule}")
+
+SET(BuildNYEnumCheckRule NYEnumCheck)
+BUILD_DYNAMIC_RULES("${BuildNYEnumCheckRule}")
+
+SET(BuildNYIntegerCheckRule NYIntegerCheck)
+BUILD_DYNAMIC_RULES("${BuildNYIntegerCheckRule}")
+
+SET(BuildNYIfCheckRule NYIfCheck)
+BUILD_DYNAMIC_RULES("${BuildNYIfCheckRule}")
+
+SET(BuildNYCaseBreakCheckRule NYCaseBreakCheck)
+BUILD_DYNAMIC_RULES("${BuildNYCaseBreakCheckRule}")
+
+SET(BuildNYBlockCaptureCheckRule NYBlockCaptureCheck)
+BUILD_DYNAMIC_RULES("${BuildNYBlockCaptureCheckRule}")

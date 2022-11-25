@@ -16,3 +16,18 @@ NYPropertyWeakRuleTest.cpp)
 
 BUILD_TEST(NYBOOLInitRuleTest
 NYBOOLInitRuleTest.cpp)
+
+BUILD_TEST(NYEnumCheckRuleTest
+NYEnumCheckRuleTest.cpp)
+
+BUILD_TEST(NYIntegerCheckRuleTest
+NYIntegerCheckRuleTest.cpp)
+
+BUILD_TEST(NYIfCheckRuleTest
+NYIfCheckRuleTest.cpp)
+
+BUILD_TEST(NYCaseBreakCheckRuleTest
+NYCaseBreakCheckRuleTest.cpp)
+
+BUILD_TEST(NYBlockCaptureCheckRuleTest
+NYBlockCaptureCheckRuleTest.cpp)

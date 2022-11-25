@@ -9,6 +9,19 @@
 
 #import "ViewController.h"
 
+enum DAY
+{
+      MON=1, TUE, WED, THU, FRI, SAT, SUN
+};
+
+typedef NS_ENUM(NSInteger, NYEnum) {
+    NYEnumA,
+    B,
+    NYEnumC,
+};
+
+
+
 @interface _ViewController ()
 @property (nonatomic) NSString *strNonKeyword;
 @property (nonatomic, strong) NSString *str;
@@ -25,6 +38,9 @@
 
 @property (nonatomic, assign) id delegate;
 
+@property (nonatomic, assign) int count;
+@property (nonatomic, copy) dispatch_block_t blk;
+
 @end
 
 @implementation _ViewController
@@ -33,6 +49,8 @@
     [super viewDidLoad];
     [self testBool];
     
+    int i = 10;
+    i = 10;
 }
 
 - (void)testBool {
@@ -41,7 +59,6 @@
         NSLog(@"dfjsdjkfjk");
     }
 }
-
 
 - (void)Ujdjf:(NSString *)_JDJJ {
     
@@ -53,6 +70,22 @@
 
 - (void)djdjf_dfdf {
     
+}
+
+- (int)testInt:(int)i dd:(int)j {
+    int ret = i*j;
+    return ret;
+}
+
+- (void)testIfBlock {
+    NSInteger i = 0;
+    if (i==0) return;
+}
+
+- (void)testBlcok {
+    self.blk = ^{
+        self.count = 10;
+    };
 }
 
 

@@ -5,12 +5,12 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class NYBOOLInitRule : public AbstractASTVisitorRule<NYBOOLInitRule>
+class NYIntegerCheckRule : public AbstractASTVisitorRule<NYIntegerCheckRule>
 {
 public:
     virtual const string name() const override
     {
-        return "BOOL变量初始化一定要赋值！";
+        return "";
     }
 
     virtual int priority() const override
@@ -20,7 +20,7 @@ public:
 
     virtual const string category() const override
     {
-        return "NYBOOLInitRule";
+        return "NYIntegerCheckRule";
     }
 
 #ifdef DOCGEN
@@ -101,14 +101,12 @@ public:
     }
      */
 
-    /* Visit IfStmt */
+    /* Visit IfStmt
     bool VisitIfStmt(IfStmt *node)
     {
-        
-        
         return true;
     }
-    
+     */
 
     /* Visit SwitchStmt
     bool VisitSwitchStmt(SwitchStmt *node)
@@ -173,12 +171,12 @@ public:
     }
      */
 
-    /* Visit DeclStmt
+    /* Visit DeclStmt 
     bool VisitDeclStmt (DeclStmt  *node)
     {
         return true;
-    }*/
-     
+    }
+     */
 
     /* Visit SwitchCase
     bool VisitSwitchCase(SwitchCase *node)
@@ -1563,10 +1561,8 @@ public:
     bool VisitVarDecl(VarDecl *node)
     {
         string nameStr = node->getType().getAsString();
-        if ((nameStr.compare("BOOL")==0 || nameStr.compare("boolean")==0 || nameStr.compare("bool")==0 ) && node->isLocalVarDecl()) {
-            if (node->getInit() == nullptr) {
-                addViolation(node, this);
-            }
+        if (nameStr.compare("int")==0) {
+            addViolation(node->getTypeSpecStartLoc(), node->getTypeSpecEndLoc(), this, "定义时推荐使用NSInteger");
         }
         return true;
     }
@@ -1705,12 +1701,31 @@ public:
     }
      */
 
-    /* Visit ObjCMethodDecl
-    bool VisitObjCMethodDecl(ObjCMethodDecl *node)
+    /* Visit ObjCMethodDecl */
+    bool VisitObjCMethodDecl(ObjCMethodDecl *methodDecl)
     {
+        //参数
+        for(ObjCMethodDecl::param_iterator pi = methodDecl->param_begin();pi!=methodDecl->param_end();pi++){
+            ParmVarDecl *varDecl = *pi;
+//            string paramName = varDecl->getNameAsString();
+            string typeStr = varDecl->getType().getAsString();
+            if(typeStr.compare("int")==0){
+                SourceLocation nameStart = varDecl->getTypeSpecStartLoc();
+                SourceLocation nameEnd = nameStart.getLocWithOffset(typeStr.size()-1);
+                addViolation(nameStart, nameEnd, this, "参数类型推荐使用NSInteger");
+            }
+        }
+        
+        //返回值
+        string returnTypeStr = methodDecl->getReturnType().getAsString();
+        if(returnTypeStr.compare("int")==0){
+            SourceRange returnSourceRange =
+            methodDecl->getReturnTypeSourceInfo()->getTypeLoc().getSourceRange();
+            addViolation(returnSourceRange.getBegin(), returnSourceRange.getEnd(), this, "返回值类型推荐使用NSInteger");
+        }
         return true;
     }
-     */
+    
 
     /* Visit ObjCContainerDecl
     bool VisitObjCContainerDecl(ObjCContainerDecl *node)
@@ -1754,12 +1769,16 @@ public:
     }
      */
 
-    /* Visit ObjCPropertyDecl
+    /* Visit ObjCPropertyDecl */
     bool VisitObjCPropertyDecl(ObjCPropertyDecl *node)
     {
+        string nameStr = node->getType().getAsString();
+        if (nameStr.compare("int")==0) {
+            addViolation(node->getTypeSourceInfo()->getTypeLoc().getBeginLoc(), node->getTypeSourceInfo()->getTypeLoc().getEndLoc(), this, "推荐使用NSInteger");
+        }
         return true;
     }
-     */
+    
 
     /* Visit ObjCCompatibleAliasDecl
     bool VisitObjCCompatibleAliasDecl(ObjCCompatibleAliasDecl *node)
@@ -1896,4 +1915,4 @@ public:
 
 };
 
-static RuleSet rules(new NYBOOLInitRule());
+static RuleSet rules(new NYIntegerCheckRule());

@@ -5,12 +5,12 @@ using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class NYBOOLInitRule : public AbstractASTVisitorRule<NYBOOLInitRule>
+class NYCaseBreakCheckRule : public AbstractASTVisitorRule<NYCaseBreakCheckRule>
 {
 public:
     virtual const string name() const override
     {
-        return "BOOL变量初始化一定要赋值！";
+        return "";
     }
 
     virtual int priority() const override
@@ -20,7 +20,7 @@ public:
 
     virtual const string category() const override
     {
-        return "NYBOOLInitRule";
+        return "NYCaseBreakCheckRule";
     }
 
 #ifdef DOCGEN
@@ -101,14 +101,12 @@ public:
     }
      */
 
-    /* Visit IfStmt */
+    /* Visit IfStmt
     bool VisitIfStmt(IfStmt *node)
     {
-        
-        
         return true;
     }
-    
+     */
 
     /* Visit SwitchStmt
     bool VisitSwitchStmt(SwitchStmt *node)
@@ -173,33 +171,38 @@ public:
     }
      */
 
-    /* Visit DeclStmt
+    /* Visit DeclStmt 
     bool VisitDeclStmt (DeclStmt  *node)
     {
         return true;
-    }*/
-     
+    }
+     */
 
-    /* Visit SwitchCase
+    /* Visit SwitchCase */
     bool VisitSwitchCase(SwitchCase *node)
     {
+        
         return true;
     }
-     */
+    
 
-    /* Visit CaseStmt
+    /* Visit CaseStmt */
     bool VisitCaseStmt(CaseStmt *node)
     {
+        Stmt *subStmt = node->getSubStmt();
+        if (subStmt.cat) {
+            <#statements#>
+        }
         return true;
     }
-     */
+    
 
-    /* Visit DefaultStmt
+    /* Visit DefaultStmt */
     bool VisitDefaultStmt(DefaultStmt *node)
     {
         return true;
     }
-     */
+    
 
     /* Visit CapturedStmt
     bool VisitCapturedStmt(CapturedStmt *node)
@@ -1559,18 +1562,12 @@ public:
     }
      */
 
-    /* Visit VarDecl */
+    /* Visit VarDecl
     bool VisitVarDecl(VarDecl *node)
     {
-        string nameStr = node->getType().getAsString();
-        if ((nameStr.compare("BOOL")==0 || nameStr.compare("boolean")==0 || nameStr.compare("bool")==0 ) && node->isLocalVarDecl()) {
-            if (node->getInit() == nullptr) {
-                addViolation(node, this);
-            }
-        }
         return true;
     }
-    
+     */
 
     /* Visit VarTemplateSpecializationDecl
     bool VisitVarTemplateSpecializationDecl(VarTemplateSpecializationDecl *node)
@@ -1896,4 +1893,4 @@ public:
 
 };
 
-static RuleSet rules(new NYBOOLInitRule());
+static RuleSet rules(new NYCaseBreakCheckRule());
