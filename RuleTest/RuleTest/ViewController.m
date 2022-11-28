@@ -9,6 +9,16 @@
 
 #import "ViewController.h"
 
+
+@interface NYXXClass : NSObject
+
+@end
+
+@implementation NYXXClass
+
+@end
+
+
 enum DAY
 {
       MON=1, TUE, WED, THU, FRI, SAT, SUN
@@ -20,7 +30,13 @@ typedef NS_ENUM(NSInteger, NYEnum) {
     NYEnumC,
 };
 
-
+typedef NS_ENUM(NSUInteger, MyEnum) {
+    MyEnumA,
+    MyEnumB,
+    MyEnumC,
+    MyEnumD,
+    MyEnumE
+};
 
 @interface _ViewController ()
 @property (nonatomic) NSString *strNonKeyword;
@@ -80,6 +96,10 @@ typedef NS_ENUM(NSInteger, NYEnum) {
 - (void)testIfBlock {
     NSInteger i = 0;
     if (i==0) return;
+    
+    if(i==0){
+        NSLog(@"testif");
+    }
 }
 
 - (void)testBlcok {
@@ -88,5 +108,27 @@ typedef NS_ENUM(NSInteger, NYEnum) {
     };
 }
 
+
+- (void)testCaseBreak {
+    MyEnum myEnum = MyEnumB;
+    switch (myEnum) {
+        case MyEnumA:
+        {
+            NSLog(@"A");
+            break;
+        }
+        case MyEnumB:
+        {
+            NSLog(@"B");
+        }
+        case MyEnumC:
+        {
+            NSLog(@"C");
+            break;
+        }
+        default:
+            break;
+    }
+}
 
 @end

@@ -31,3 +31,6 @@ BUILD_DYNAMIC_RULES("${BuildNYCaseBreakCheckRule}")
 
 SET(BuildNYBlockCaptureCheckRule NYBlockCaptureCheck)
 BUILD_DYNAMIC_RULES("${BuildNYBlockCaptureCheckRule}")
+
+SET(BuildNYCategoryOverrideCheckRule NYCategoryOverrideCheck)
+BUILD_DYNAMIC_RULES("${BuildNYCategoryOverrideCheckRule}")

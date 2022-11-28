@@ -1,14 +1,178 @@
 #include "oclint/AbstractASTVisitorRule.h"
 #include "oclint/RuleSet.h"
-#include <regex>
+#include <unordered_map>
+#include <iostream>
 
 using namespace std;
 using namespace clang;
 using namespace oclint;
 
-class NYCaseBreakCheckRule : public AbstractASTVisitorRule<NYCaseBreakCheckRule>
+
+class NYCategoryOverrideCheckRule : public AbstractASTVisitorRule<NYCategoryOverrideCheckRule>
 {
+private:
+    // 方法名, ObjCMethodDecl 数组的 map
+    unordered_map<string, unordered_map<string, vector<ObjCMethodDecl *>>> classInfo;
+    
+    // 方法名, ObjCMethodDecl 数组的 map
+    unordered_map<string, vector<ObjCMethodDecl *> > umap;
+    unordered_map<string, vector<ObjCMethodDecl *> >::iterator map_it;
+    
+    int catCount = 0;
+    
 public:
+    
+    string getString(const int32_t& a)
+    {
+        char c[1024]={0};
+        snprintf(c,sizeof(c),"%d",a);
+        return c;
+    }
+
+
+    string getString(const int64_t& a)
+    {
+        char c[1024]={0};
+        snprintf(c,sizeof(c),"%lld",a);
+        return c;
+    }
+    
+    string getString(const string& s)
+    {
+        return s;
+    }
+
+    string mapToString(unordered_map<string, vector<ObjCMethodDecl *>>& m)
+    {
+        string str="";
+        unordered_map<string, vector<ObjCMethodDecl *>>::iterator it = m.begin();
+        for(;it != m.end();it++)
+        {
+            str += getString(it->first) + ":"+ to_string(it->second.size()) +",";
+        }
+        return str.length()>0 ? str.substr(0, str.length()-1) : str;
+    }
+
+    
+    /*
+    bool VisitObjCCategoryImplDecl(ObjCCategoryImplDecl *node)
+    {
+        string key = node->getClassInterface()->getNameAsString();
+        
+        unordered_map<string, vector<ObjCMethodDecl *>> umap = classInfo[key];
+        
+        addViolation(node, this, "{key="+key+"& value="+mapToString(umap)+"}");
+        
+        return true;
+    } */
+    
+    /*
+    bool VisitObjCInterfaceDecl(ObjCInterfaceDecl *node)
+    {
+        addViolation(node, this, "VisitObjCInterfaceDecl");
+        return true;
+    }*/
+    
+    /* Visit ObjCCategoryImplDecl */
+    bool VisitObjCCategoryImplDecl(ObjCCategoryImplDecl *node)
+    {
+        string key = node->getClassInterface()->getNameAsString();
+        
+        
+//        if (key.compare("Person") == 0) {
+//            catCount++;
+//        }
+        
+        if (classInfo.find(key) != classInfo.end()) {
+            unordered_map<string, vector<ObjCMethodDecl *>> &umap = classInfo[key];
+//            addViolation(node, this, "遍历之前{key="+key+"& value="+mapToString(umap)+"}");
+            
+            // 遍历分类
+            
+            if (node->getClassInterface()->known_categories_empty() == false) {
+                ObjCInterfaceDecl::known_categories_iterator cate_it = node->getClassInterface()->known_categories_begin();
+                
+                while (cate_it != node->getClassInterface()->known_categories_end()) {
+                    
+                
+                    // 获取分类 impl, 遍历分类方法
+                    ObjCCategoryImplDecl *ca_impl = cate_it->getImplementation();
+                    ObjCContainerDecl::method_iterator came_it = ca_impl->meth_begin();
+                    while (came_it != ca_impl->meth_end()) {
+                        string methodName = came_it->getNameAsString();
+                        unordered_map<string, vector<ObjCMethodDecl *> >::iterator map_it = umap.find(methodName);
+                        if (map_it != umap.end()) {
+                            map_it->second.push_back(came_it->getCanonicalDecl());
+                        } else {
+                            vector<ObjCMethodDecl *> vec;
+                            vec.push_back(came_it->getCanonicalDecl());
+                            umap[methodName] = vec;
+                        }
+                        came_it++;
+                    }
+                    cate_it++;
+                }
+            }
+            
+//            addViolation(node, this, "分类数目："+ to_string(catCount));
+            
+//            addViolation(node, this, "遍历之后{key="+key+"& value="+mapToString(umap)+"}");
+            
+            
+            for (unordered_map<string, vector<ObjCMethodDecl *> >::iterator map_it = umap.begin(); map_it != umap.end(); map_it++) {
+                // 找出出现次数大于2的方法, 报错
+                if (map_it->second.size() > 1) {
+                    string msg = "方法 \"" + map_it->first + "\" 已经在其他分类或者主类中实现！";
+                    vector<ObjCMethodDecl *> vec = map_it->second;
+                    
+                    addViolation(node, this, msg);
+//                    for (unsigned int i=0; i<vec.size(); i++) {
+//                        addViolation(vec[i], this, msg);    // 出错处理
+//                    }
+                }
+            }
+            
+        }
+         
+        return true;
+    }
+    
+    /* VisitObjCImplementationDecl */
+    bool VisitObjCImplementationDecl(ObjCImplementationDecl *impl)
+    {
+        string key = impl->getNameAsString();
+        if (classInfo.find(key) != classInfo.end()) {
+            addViolation(impl, this, "多次遍历重置了classInfo");
+        }
+
+        // 遍历主类 impl 的方法，因为有些函数没在 interface 中
+        unordered_map<string, vector<ObjCMethodDecl *>> tmpMap;
+        for (ObjCContainerDecl::method_iterator met_it = impl->meth_begin(); met_it != impl->meth_end();met_it++) {
+            string name = met_it->getNameAsString();
+            vector<ObjCMethodDecl *> vec;
+            ObjCMethodDecl *decl = met_it->getCanonicalDecl();
+            vec.push_back(decl);
+            tmpMap[name] = vec;
+        }
+        
+        classInfo[key] = tmpMap;
+//        addViolation(impl, this, "{key="+key+", value="+mapToString(tmpMap)+"}");
+        return true;
+    }
+    
+    /* 向 map 中加入一个元素 */
+    void insert_map(string name, ObjCMethodDecl *methodDec) {
+        // 如果存在，数组追加一，不存在，则插入
+        map_it = umap.find(name);
+        if (map_it == umap.end()) {
+            vector<ObjCMethodDecl *> vec;
+            vec.emplace_back(methodDec);
+            umap[name] = vec;
+        } else {
+            map_it->second.emplace_back(methodDec);
+        }
+    }
+    
     virtual const string name() const override
     {
         return "";
@@ -21,7 +185,7 @@ public:
 
     virtual const string category() const override
     {
-        return "NYCaseBreakCheckRule";
+        return "NYCategoryOverrideCheckRule";
     }
 
 #ifdef DOCGEN
@@ -179,80 +343,26 @@ public:
     }
      */
 
-    /* Visit SwitchCase */
+    /* Visit SwitchCase
     bool VisitSwitchCase(SwitchCase *node)
     {
         return true;
     }
-    
-    bool CaseStmtContainsBreak(CaseStmt *node)
-    {
-        SourceLocation startLocation = node->getBeginLoc();
-        SourceLocation endLocation = node->getEndLoc();
-        if (node->getNextSwitchCase() != nullptr) {
-//            endLocation = node->getNextSwitchCase()->getBeginLoc();
-        }
-        SourceLocation startSpellingLoc = startLocation;
-        SourceLocation endSpellingLoc = endLocation;
-        clang::SourceManager *sourceManager = &_carrier->getSourceManager();
-        if (!startLocation.isFileID()) {
-            startSpellingLoc = sourceManager->getSpellingLoc(startLocation);
-            endSpellingLoc = sourceManager->getSpellingLoc(endLocation);
-        }
-        int length = sourceManager->getFileOffset(endSpellingLoc) -  sourceManager->getFileOffset(startSpellingLoc)+1;
-        if (length > 0) {
-            string blockStatementString = StringRef(sourceManager->getCharacterData(startLocation), length).str();
-            replace(blockStatementString.begin(), blockStatementString.end(), '\n', ' ');
-            replace(blockStatementString.begin(), blockStatementString.end(), '\t', ' ');
-            replace(blockStatementString.begin(), blockStatementString.end(), '\r', ' ');
-            if (blockStatementString.find("break") == string::npos) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    
+     */
 
-    /* Visit CaseStmt */
+    /* Visit CaseStmt
     bool VisitCaseStmt(CaseStmt *node)
     {
-        SourceLocation startLocation = node->getBeginLoc();
-        SourceLocation endLocation = node->getEndLoc();
-        if (node->getNextSwitchCase() != nullptr) {
-//            endLocation = node->getNextSwitchCase()->getBeginLoc();
-        }
-        
-        SourceLocation startSpellingLoc = startLocation;
-        SourceLocation endSpellingLoc = endLocation;
-        clang::SourceManager *sourceManager = &_carrier->getSourceManager();
-        if (!startLocation.isFileID()) {
-            startSpellingLoc = sourceManager->getSpellingLoc(startLocation);
-            endSpellingLoc = sourceManager->getSpellingLoc(endLocation);
-        }
-        int length = sourceManager->getFileOffset(endSpellingLoc) -  sourceManager->getFileOffset(startSpellingLoc)+1;
-        if (length > 0) {
-            string blockStatementString = StringRef(sourceManager->getCharacterData(startLocation), length).str();
-            replace(blockStatementString.begin(), blockStatementString.end(), '\n', ' ');
-            replace(blockStatementString.begin(), blockStatementString.end(), '\t', ' ');
-            replace(blockStatementString.begin(), blockStatementString.end(), '\r', ' ');
-            if (blockStatementString.find("break") == string::npos) {
-                addViolation(node, this, blockStatementString + "\tcase要添加break哟！");
-            }
-        }
-        
         return true;
     }
-    
-    
-    /* Visit DefaultStmt */
+     */
+
+    /* Visit DefaultStmt
     bool VisitDefaultStmt(DefaultStmt *node)
     {
-        
         return true;
     }
-    
+     */
 
     /* Visit CapturedStmt
     bool VisitCapturedStmt(CapturedStmt *node)
@@ -1787,13 +1897,6 @@ public:
     }
      */
 
-    /* Visit ObjCCategoryImplDecl
-    bool VisitObjCCategoryImplDecl(ObjCCategoryImplDecl *node)
-    {
-        return true;
-    }
-     */
-
     /* Visit ObjCImplementationDecl
     bool VisitObjCImplementationDecl(ObjCImplementationDecl *node)
     {
@@ -1943,4 +2046,4 @@ public:
 
 };
 
-static RuleSet rules(new NYCaseBreakCheckRule());
+static RuleSet rules(new NYCategoryOverrideCheckRule());

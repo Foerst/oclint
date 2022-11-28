@@ -21,6 +21,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0EEDEE132930CFA8008DAAB3 /* Person+Cat1.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEDEE0D2930CFA8008DAAB3 /* Person+Cat1.m */; };
+		0EEDEE142930CFA8008DAAB3 /* Person+Cat2.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEDEE0F2930CFA8008DAAB3 /* Person+Cat2.m */; };
+		0EEDEE152930CFA8008DAAB3 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEDEE122930CFA8008DAAB3 /* Person.m */; };
 		CCA9924E26CE35C20078583B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CCA9924D26CE35C20078583B /* AppDelegate.m */; };
 		CCA9925126CE35C20078583B /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CCA9925026CE35C20078583B /* SceneDelegate.m */; };
 		CCA9925426CE35C20078583B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CCA9925326CE35C20078583B /* ViewController.m */; };
@@ -31,6 +34,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0EEDEE0D2930CFA8008DAAB3 /* Person+Cat1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Person+Cat1.m"; sourceTree = "<group>"; };
+		0EEDEE0E2930CFA8008DAAB3 /* Person+Cat2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Person+Cat2.h"; sourceTree = "<group>"; };
+		0EEDEE0F2930CFA8008DAAB3 /* Person+Cat2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Person+Cat2.m"; sourceTree = "<group>"; };
+		0EEDEE102930CFA8008DAAB3 /* Person+Cat1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Person+Cat1.h"; sourceTree = "<group>"; };
+		0EEDEE112930CFA8008DAAB3 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		0EEDEE122930CFA8008DAAB3 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		CCA9924926CE35C20078583B /* RuleTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RuleTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCA9924C26CE35C20078583B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		CCA9924D26CE35C20078583B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -81,6 +90,12 @@
 				CCA9925026CE35C20078583B /* SceneDelegate.m */,
 				CCA9925226CE35C20078583B /* ViewController.h */,
 				CCA9925326CE35C20078583B /* ViewController.m */,
+				0EEDEE112930CFA8008DAAB3 /* Person.h */,
+				0EEDEE122930CFA8008DAAB3 /* Person.m */,
+				0EEDEE102930CFA8008DAAB3 /* Person+Cat1.h */,
+				0EEDEE0D2930CFA8008DAAB3 /* Person+Cat1.m */,
+				0EEDEE0E2930CFA8008DAAB3 /* Person+Cat2.h */,
+				0EEDEE0F2930CFA8008DAAB3 /* Person+Cat2.m */,
 				CCA9925526CE35C20078583B /* Main.storyboard */,
 				CCA9925826CE35CA0078583B /* Assets.xcassets */,
 				CCA9925A26CE35CA0078583B /* LaunchScreen.storyboard */,
@@ -183,6 +198,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0EEDEE142930CFA8008DAAB3 /* Person+Cat2.m in Sources */,
+				0EEDEE132930CFA8008DAAB3 /* Person+Cat1.m in Sources */,
+				0EEDEE152930CFA8008DAAB3 /* Person.m in Sources */,
 				CCA9925426CE35C20078583B /* ViewController.m in Sources */,
 				CCA9924E26CE35C20078583B /* AppDelegate.m in Sources */,
 				CCA9925F26CE35CA0078583B /* main.m in Sources */,
