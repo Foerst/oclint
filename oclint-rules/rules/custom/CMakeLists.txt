@@ -34,3 +34,6 @@ BUILD_DYNAMIC_RULES("${BuildNYBlockCaptureCheckRule}")
 
 SET(BuildNYCategoryOverrideCheckRule NYCategoryOverrideCheck)
 BUILD_DYNAMIC_RULES("${BuildNYCategoryOverrideCheckRule}")
+
+SET(BuildNYContainerCheckRule NYContainerCheck)
+BUILD_DYNAMIC_RULES("${BuildNYContainerCheckRule}")

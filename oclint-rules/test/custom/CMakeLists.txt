@@ -34,3 +34,6 @@ NYBlockCaptureCheckRuleTest.cpp)
 
 BUILD_TEST(NYCategoryOverrideCheckRuleTest
 NYCategoryOverrideCheckRuleTest.cpp)
+
+BUILD_TEST(NYContainerCheckRuleTest
+NYContainerCheckRuleTest.cpp)

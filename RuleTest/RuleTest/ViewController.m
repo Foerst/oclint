@@ -61,13 +61,95 @@ typedef NS_ENUM(NSUInteger, MyEnum) {
 
 @implementation _ViewController
 
+NSString *stringParam(NSString *str) {
+    return str;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self testBool];
     
-    int i = 10;
-    i = 10;
+    [self testContainer];
 }
+
+- (void)testContainer {
+    // array
+    NSString *arg = nil;
+    NSMutableArray *arr = [NSMutableArray array];
+    
+    [arr addObject:@"ss"];
+    [arr addObject:arg];
+    
+    if (arg.length) {
+        [arr addObject:arg];
+    }
+    
+    [arr addObject:stringParam(arg)];
+    
+    [arr addObject:nil];
+    
+    // string
+    NSMutableString *str = [NSMutableString new];
+    [str appendString:@""];
+    
+    
+    [str appendString:arg];
+    
+    [str appendString:nil];
+    
+    if (arg.length) {
+        [str appendString:arg];
+    }
+        
+
+    if (arg.length>0) {
+        [str appendString:arg];
+    }
+    
+    if (arg.length > 0) {
+        [str appendString:arg];
+    }
+    
+    [str appendString:stringParam(arg)];
+    
+    [str appendString:arg];
+    
+    // dictionary
+    NSMutableDictionary *mDict = [NSMutableDictionary dictionary];
+    
+    [mDict setObject:arg forKey:@"key"];
+    
+    if (arg.length) {
+        [mDict setObject:arg forKey:@"key"];
+    }
+    [mDict setObject:arg forKey:@"key"];
+    
+    [mDict setObject:nil forKey:@"key"];
+    
+    
+    // define dictionary
+    NSDictionary *dict = @{
+        @"tmp": arg,
+        @"id": @"11111",
+        @"name": @"xxx",
+        @"arg": arg,
+        @"other": [NSNull null]
+    };
+    
+    if (arg.length >0) {
+        NSDictionary *dict = @{
+            @"tmp": arg,
+            @"id": @"11111",
+            @"name": @"xxx",
+            @"arg": arg,
+            @"other": [NSNull null]
+        };
+        NSLog(@"%@", dict);
+    }
+    NSLog(@"%@", dict);
+}
+
+
 
 - (void)testBool {
     BOOL flag;
