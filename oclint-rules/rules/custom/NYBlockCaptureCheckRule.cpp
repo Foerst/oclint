@@ -1983,7 +1983,7 @@ private:
             } while (newBlockStatementString.length() != blockStatementString.length());
             blockStatementString = std::regex_replace(blockStatementString, patternAnnotationStrongify, "");
             blockStatementString = std::regex_replace(blockStatementString, patternOtherAnnotationStrongify, "");
-            if (blockStatementString.find("") == string::npos) {
+            if (blockStatementString.find("@strongify") == string::npos) {
                 return false;
             } else {
                 return true;
