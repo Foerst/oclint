@@ -153,6 +153,10 @@ NSString *stringParam(NSString *str) {
 
 - (void)testBool {
     BOOL flag;
+    NSInteger i = 0;
+    if (i == 0) {
+        flag = YES;
+    }
     if (flag) {
         NSLog(@"dfjsdjkfjk");
     }
